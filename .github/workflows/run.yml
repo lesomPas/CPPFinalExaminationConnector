@@ -1,0 +1,51 @@
+name: AutoJudge All Mode
+
+on:
+  workflow_dispatch: # 手动触发
+  push:
+    branches: [ main ]
+
+jobs:
+  judge:
+    runs-on: windows-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 查看文件结构
+      run: |
+        echo "项目结构:"
+        dir /s /b
+      shell: cmd
+      
+    - name: 安装编译环境 (MSYS2 + MinGW-w64)
+      run: |
+        choco install msys2 -y --no-progress --force
+        refreshenv
+        C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -Syu --noconfirm"
+        C:\tools\msys64\usr\bin\bash.exe -l -c "pacman -S --needed --noconfirm mingw-w64-x86_64-gcc"
+        echo "C:\tools\msys64\mingw64\bin" >> $env:GITHUB_PATH
+      shell: powershell
+      
+    - name: 验证编译器
+      run: |
+        g++ --version
+        where g++
+      shell: cmd
+      
+    - name: 运行自动化评测 (All Mode)
+      timeout-minutes: 10
+      run: .\runner.bat
+      shell: cmd
+      
+    - name: 上传评测结果
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: judge-results
+        path: |
+          *.zip
+          *.log
+          test/*.out
+        retention-days: 7

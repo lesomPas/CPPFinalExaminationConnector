@@ -1,0 +1,53 @@
+{
+    "CCList": [
+        "$Compiler$ $Flag$ $FileList$ -o $checker$"
+    ],
+    "FileList": [
+        "checker.cpp",
+        "player.cpp",
+        "monster.cpp",
+        "global.cpp",
+        "npc.cpp",
+        "map.cpp",
+        "item.cpp"
+    ],
+    "Flag": "-std=c++11 -O2 -static",
+    "Result": true,
+    "Task1": {
+        "nums": 10
+    },
+    "Task10": {
+        "nums": 10
+    },
+    "Task11": {
+        "nums": 10
+    },
+    "Task12": {
+        "nums": 10
+    },
+    "Task2": {
+        "nums": 10
+    },
+    "Task3": {
+        "nums": 10
+    },
+    "Task4": {
+        "nums": 10
+    },
+    "Task5": {
+        "nums": 10
+    },
+    "Task6": {
+        "nums": 10
+    },
+    "Task7": {
+        "nums": 1,
+        "has_input": false
+    },
+    "Task8": {
+        "nums": 10
+    },
+    "Task9": {
+        "nums": 10
+    }
+}
