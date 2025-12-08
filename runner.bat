@@ -11,7 +11,7 @@ echo all >> input.tmp
 echo exit >> input.tmp
 
 :: 从文件读取输入，并将输出打印到屏幕
-checker.exe < input.tmp
+main.exe < input.tmp
 
 :: 获取退出码
 set EXIT_CODE=%ERRORLEVEL%
