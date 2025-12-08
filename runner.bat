@@ -1,23 +1,62 @@
-@echo off
 chcp 65001 >nul
+setlocal EnableDelayedExpansion
 
-:: 设置工作目录
-set "WORK_DIR=%~dp0src"
-for %%I in ("%WORK_DIR%") do set "WORK_DIR=%%~fI"
+echo ===== 自动化评测脚本 (备用方案) =====
 
-:: 使用临时文件代替管道，避免管道导致的退出码问题
-echo %WORK_DIR% > input.tmp
-echo all >> input.tmp
-echo exit >> input.tmp
+:: 1. 设置工作目录
+set "WORKDIR=%~dp0src\"
+echo 工作目录: %WORKDIR%
 
-:: 从文件读取输入，并将输出打印到屏幕
-main.exe < input.tmp
+:: 2. 检查必要文件
+if not exist "main.exe" (
+    echo 错误: 找不到 main.exe
+    exit /b 1
+)
 
-:: 获取退出码
-set EXIT_CODE=%ERRORLEVEL%
+if not exist "%WORKDIR%\config.json" (
+    echo 错误: 找不到 %WORKDIR%\config.json
+    exit /b 1
+)
 
-:: 清理临时文件
-del input.tmp
+:: 3. 创建输入序列文件（关键！）
+set "INPUT_FILE=%temp%\judge_input_%RANDOM%.tmp"
+echo 创建输入文件: %INPUT_FILE%
 
-:: 显式退出，传递退出码
-exit /b %EXIT_CODE%
+:: 写入输入序列：
+:: 第一行：工作目录
+:: 等待程序处理
+:: 第二行：all 命令
+(
+    echo %WORKDIR%
+    timeout /t 2 /nobreak >nul
+    echo all
+    echo exit
+) > "%INPUT_FILE%"
+
+echo 输入文件内容:
+type "%INPUT_FILE%"
+echo.
+
+:: 4. 运行程序并捕获输出
+echo 启动 main.exe...
+echo ================================
+main.exe < "%INPUT_FILE%"
+set "EXIT_CODE=%ERRORLEVEL%"
+echo ================================
+echo 程序退出代码: %EXIT_CODE%
+
+:: 5. 清理和结果展示
+if exist "%INPUT_FILE%" del "%INPUT_FILE%"
+
+echo.
+echo 生成的文件:
+dir /b *.zip 2>nul && (
+    echo 找到结果文件:
+    dir /b *.zip
+) || (
+    echo 未找到结果文件
+)
+
+echo.
+pause
+exit /b %EXIT_CODE
