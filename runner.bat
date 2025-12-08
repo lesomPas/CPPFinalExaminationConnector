@@ -2,61 +2,60 @@
 chcp 65001 >nul
 setlocal EnableDelayedExpansion
 
-echo ===== 自动化评测脚本 (备用方案) =====
+:: 0. 诊断信息
+echo ======================
+echo 脚本所在目录=%~dp0
+echo 当前工作目录=%cd%
+echo 是否存在 src 目录: exist "%~dp0src\" && echo 是 || echo 否
+echo ======================
+pause
 
-:: 1. 设置工作目录
-set "WORKDIR=%~dp0src\"
-echo 工作目录: %WORKDIR%
+:: 1. 强制切换到脚本目录
+cd /d "%~dp0"
+set "WORKDIR=%~dp0"
 
-:: 2. 检查必要文件
-if not exist "main.exe" (
-    echo 错误: 找不到 main.exe
+:: 2. 检查 src
+if not exist "%WORKDIR%src\" (
+    echo [ERROR] 找不到 src 目录: %WORKDIR%src\
+    dir "%WORKDIR%"
+    pause
     exit /b 1
 )
 
-if not exist "%WORKDIR%\config.json" (
-    echo 错误: 找不到 %WORKDIR%\config.json
-    exit /b 1
-)
-
-:: 3. 创建输入序列文件（关键！）
-set "INPUT_FILE=%temp%\judge_input_%RANDOM%.tmp"
-echo 创建输入文件: %INPUT_FILE%
-
-:: 写入输入序列：
-:: 第一行：工作目录
-:: 等待程序处理
-:: 第二行：all 命令
+:: 3. 生成输入
+set "INPUT=%temp%\%~n0_%random%.tmp"
 (
-    echo %WORKDIR%
-    timeout /t 2 /nobreak >nul
+    echo %WORKDIR%src\
     echo all
-) > "%INPUT_FILE%"
+) > "%INPUT%"
 
-echo 输入文件内容:
-type "%INPUT_FILE%"
+:: 4. 检查 main.exe
+if not exist "main.exe" (
+    echo [ERROR] 找不到 main.exe
+    dir *.exe
+    pause
+    exit /b 1
+)
+
+:: 5. 运行并捕获返回值
+echo 开始自动化评测 (All Mode)...
+main.exe < "%INPUT%"
+if errorlevel 1 (
+    echo [ERROR] main.exe 异常退出，返回码=%errorlevel%
+    pause
+    exit /b %errorlevel%
+)
+
+:: 6. 清理
+del "%INPUT%" 2>nul
+
+:: 7. 结果
 echo.
-
-:: 4. 运行程序并捕获输出
-echo 启动 main.exe...
-echo ================================
-main.exe < "%INPUT_FILE%"
-set "EXIT_CODE=%ERRORLEVEL%"
-echo ================================
-echo 程序退出代码: %EXIT_CODE%
-
-:: 5. 清理和结果展示
-if exist "%INPUT_FILE%" del "%INPUT_FILE%"
-
-echo.
-echo 生成的文件:
+echo 评测完成！
 dir /b *.zip 2>nul && (
-    echo 找到结果文件:
+    echo 生成的打包文件:
     dir /b *.zip
 ) || (
-    echo 未找到结果文件
+    echo 未找到打包文件
 )
-
-echo.
 pause
-exit /b %EXIT_CODE%

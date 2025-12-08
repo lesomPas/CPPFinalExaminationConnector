@@ -8,6 +8,7 @@ on:
 jobs:
   judge:
     runs-on: windows-latest
+    timeout-minutes: 6
     
     steps:
     - name: 检出代码
@@ -35,7 +36,6 @@ jobs:
       shell: cmd
       
     - name: 运行自动化评测 (All Mode)
-      timeout-minutes: 10
       run: .\runner.bat
       shell: cmd
       
