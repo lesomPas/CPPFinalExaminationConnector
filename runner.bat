@@ -1,22 +1,20 @@
 @echo off
 chcp 65001 >nul
 
-:: AutoJudge Runner - Final Mode
-:: ======================================
+:: 设置工作目录 (使用引号保护路径，并去除末尾反斜杠以避免歧义)
+set "WORK_DIR=%~dp0src"
 
-:: 假设 runner.bat 放在项目根目录
-:: 1. 设置工作目录为 "src" 文件夹 (根据你的实际情况修改)
-set WORK_DIR=%~dp0src
+:: 去除路径末尾可能存在的反斜杠，并确保格式正确 (这能有效防止空格产生)
+:: 这一步利用了 for 变量修饰符来规范化路径
+for %%I in ("%WORK_DIR%") do set "WORK_DIR=%%~fI"
 
-:: 2. 按顺序传递输入：
-::    第一行：工作目录路径 (对应 main.cpp 中的 dir.getline(std::cin))
-::    第二行：all (对应 Checker::run() 中的指令)
-::    第三行：exit (评测结束后退出程序，防止挂起)
+:: 执行
+echo [Info] 使用工作目录: "%WORK_DIR%"
 (
     echo %WORK_DIR%
     echo all
     echo exit
-) | main.exe
+) | .\checker.exe
 
 echo.
 echo [Info] 评测流程结束。
