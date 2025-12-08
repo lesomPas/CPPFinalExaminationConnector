@@ -14,7 +14,7 @@ echo [Info] 使用工作目录: "%WORK_DIR%"
     echo %WORK_DIR%
     echo all
     echo exit
-) | .\checker.exe
+) | .\main.exe
 
 echo.
 echo [Info] 评测流程结束。
