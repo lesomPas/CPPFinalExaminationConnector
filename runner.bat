@@ -2,48 +2,61 @@
 chcp 65001 >nul
 setlocal EnableDelayedExpansion
 
-:: 1. 取脚本所在目录（末尾带 \）
-set "WORKDIR=%~dp0"
+echo ===== 自动化评测脚本 (备用方案) =====
 
-:: 2. 检查 src 目录是否存在
-if not exist "%WORKDIR%src\" (
-    echo [ERROR] 找不到 src 目录: %WORKDIR%src\
-    dir "%WORKDIR%"
-    exit /b 1
-)
+:: 1. 设置工作目录
+set "WORKDIR=%~dp0src\"
+echo 工作目录: %WORKDIR%
 
-:: 3. 生成两行指令的临时文件
-set "INPUT=%temp%\%~n0_%random%.tmp"
-(
-    echo %WORKDIR%src\
-    echo all
-) > "%INPUT%"
-
-:: 4. 一次性喂给 main.exe（只启动一次）
-echo 工作目录: %WORKDIR%src\
-echo 开始自动化评测 (All Mode)...
-
-:: 检查 main.exe 是否存在
+:: 2. 检查必要文件
 if not exist "main.exe" (
-    echo [ERROR] 找不到 main.exe
-    dir *.exe
+    echo 错误: 找不到 main.exe
     exit /b 1
 )
 
-main.exe < "%INPUT%"
+if not exist "%WORKDIR%\config.json" (
+    echo 错误: 找不到 %WORKDIR%\config.json
+    exit /b 1
+)
 
-:: 5. 清理
-if exist "%INPUT%" del "%INPUT%" 2>nul
+:: 3. 创建输入序列文件（关键！）
+set "INPUT_FILE=%temp%\judge_input_%RANDOM%.tmp"
+echo 创建输入文件: %INPUT_FILE%
 
-:: 6. 结果展示
+:: 写入输入序列：
+:: 第一行：工作目录
+:: 等待程序处理
+:: 第二行：all 命令
+(
+    echo %WORKDIR%
+    timeout /t 2 /nobreak >nul
+    echo all
+) > "%INPUT_FILE%"
+
+echo 输入文件内容:
+type "%INPUT_FILE%"
 echo.
-echo 评测完成！
 
+:: 4. 运行程序并捕获输出
+echo 启动 main.exe...
+echo ================================
+main.exe < "%INPUT_FILE%"
+set "EXIT_CODE=%ERRORLEVEL%"
+echo ================================
+echo 程序退出代码: %EXIT_CODE%
+
+:: 5. 清理和结果展示
+if exist "%INPUT_FILE%" del "%INPUT_FILE%"
+
+echo.
+echo 生成的文件:
 dir /b *.zip 2>nul && (
-    echo 生成的打包文件:
+    echo 找到结果文件:
     dir /b *.zip
 ) || (
-    echo 未找到打包文件
+    echo 未找到结果文件
 )
 
+echo.
 pause
+exit /b %EXIT_CODE%
