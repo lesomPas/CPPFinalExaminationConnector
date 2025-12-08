@@ -1,18 +1,22 @@
 @echo off
 chcp 65001 >nul
 
-:: 正确设置工作目录（去掉末尾空格）
-for /f "delims=" %%A in ("%~dp0src") do set "WORKDIR=%%A\"
+:: AutoJudge Runner - Final Mode
+:: ======================================
 
-:: 调试：显示实际路径
-echo 调试信息：
-echo 工作目录实际值: "%WORKDIR%"
-echo 检查目录是否存在:
-if exist "%WORKDIR%" (echo ✓ 目录存在) else (echo ✗ 目录不存在)
-if exist "%WORKDIR%config.json" (echo ✓ config.json存在) else (echo ✗ config.json不存在)
+:: 假设 runner.bat 放在项目根目录
+:: 1. 设置工作目录为 "src" 文件夹 (根据你的实际情况修改)
+set WORK_DIR=%~dp0src
+
+:: 2. 按顺序传递输入：
+::    第一行：工作目录路径 (对应 main.cpp 中的 dir.getline(std::cin))
+::    第二行：all (对应 Checker::run() 中的指令)
+::    第三行：exit (评测结束后退出程序，防止挂起)
+(
+    echo %WORK_DIR%
+    echo all
+    echo exit
+) | main.exe
+
 echo.
-
-:: 运行程序
-(echo %WORKDIR% & echo all) | main.exe
-
-echo 执行完成
+echo [Info] 评测流程结束。
