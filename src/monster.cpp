@@ -5,8 +5,15 @@
 // 怪物初始化
 void MonsterList::init() {
   // 任务5：完成MonsterList的初始化
-  // 提示：构建 Monster 变量 monster ，对其赋值后，使用 _data.emplace_back(monster) 将其添加至容器
-  // 等待完成......
+  int n;
+  std::cin >> n;
+  int id = 100;
+  for (int i = 1; i <= n; i++) {
+    std::cin >> hp >> attack >> defense >> money;
+    Monster monster(id, hp, attack, defense, money);
+    _data.emplace_back(monster);
+    id++;
+  }
   return;
 }
 

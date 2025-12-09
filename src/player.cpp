@@ -3,8 +3,7 @@
 
 // 任务1：完成玩家属性初始化
 void Player::init() {
-  // 提示：使用 std::cin 依次获取对应的值
-  // 等待完成......
+  std::cin >> _hp >> _attack >> _defense >> _money >> _yellow_key >> _blue_key >> _red_key;
 }
 
 // 任务2：完成钥匙拾取
