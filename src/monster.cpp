@@ -9,6 +9,7 @@ void MonsterList::init() {
   std::cin >> n;
   int id = 100;
   for (int i = 1; i <= n; i++) {
+    int hp, attack, defense, money;
     std::cin >> hp >> attack >> defense >> money;
     Monster monster(id, hp, attack, defense, money);
     _data.emplace_back(monster);
