@@ -8,14 +8,25 @@ void Player::init() {
 
 // 任务2：完成钥匙拾取
 void Player::pick_key(int id) {
-  // 等待完成......
+  if (id == 11) {
+    _yellow_key++;
+  }
+  else if (id == 12) {
+    _blue_key++;
+  }
+  else if (id == 13) {
+    _red_key++;
+  }
   print();
   return;
 }
 
 // 任务3：完成加成道具拾取
 void Player::pick_item(const Item &item) {
-  // 等待完成......
+  _hp += item.hp;
+  _attack += items.attack;
+  _defense += item.defense;
+  _money += item.money;
   print();
   return;
 }
