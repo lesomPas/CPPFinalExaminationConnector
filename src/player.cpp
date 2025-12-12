@@ -52,12 +52,13 @@ bool Player::open_door(int id) {
 // 任务6：完成战斗
 bool Player::fight(const Monster &monster) {
   int origin_hp = _hp;
+  int origin_monster_hp = monster.hp;
 
   int result = 0; // 1 -> 玩家胜 2 -> 怪物胜
 
   while (true) {
-    monster.hp -= std::min(1, _attack - monster.defense);
-    if (monster.hp <= 0) {
+    origin_monster_hp -= std::min(1, _attack - monster.defense);
+    if (origin_monster_hp <= 0) {
       result = 1;
       break;
     }
