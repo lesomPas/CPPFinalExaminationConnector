@@ -24,7 +24,7 @@ void Player::pick_key(int id) {
 // 任务3：完成加成道具拾取
 void Player::pick_item(const Item &item) {
   _hp += item.hp;
-  _attack += items.attack;
+  _attack += item.attack;
   _defense += item.defense;
   _money += item.money;
   print();
@@ -33,8 +33,20 @@ void Player::pick_item(const Item &item) {
 
 // 任务4：完成开门
 bool Player::open_door(int id) {
-  // 提示：想好什么时候 return true 不要忘记 print()
-  return false;
+  if (id == 4 && _yellow_key > 0) {
+    _yellow_key--;
+  }
+  else if (id == 5 && _blue_key > 0) {
+    _blue_key--;
+  }
+  else if (id == 6 && _red_key > 0) {
+    _red_key--;
+  }
+  else {
+    return false;
+  }
+  print();
+  return true;
 }
 
 // 任务6：完成战斗
