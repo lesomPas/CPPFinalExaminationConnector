@@ -57,12 +57,12 @@ bool Player::fight(const Monster &monster) {
   int result = 0; // 1 -> 玩家胜 2 -> 怪物胜
 
   while (true) {
-    origin_monster_hp -= std::min(1, _attack - monster.defense);
+    origin_monster_hp -= std::max(1, _attack - monster.defense);
     if (origin_monster_hp <= 0) {
       result = 1;
       break;
     }
-    _hp -= std::min(1, monster.attack - _defense);
+    _hp -= std::max(1, monster.attack - _defense);
     if (_hp <= 0) {
       result = 2;
       break;
