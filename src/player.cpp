@@ -58,12 +58,12 @@ bool Player::fight(const Monster &monster) {
   while (true) {
     monster.hp -= std::min(1, _attack - monster.defense);
     if (monster.hp <= 0) {
-      results = 1;
+      result = 1;
       break;
     }
     _hp -= std::min(1, monster.attack - _defense);
     if (_hp <= 0) {
-      results = 2;
+      result = 2;
       break;
     }
   }
