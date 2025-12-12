@@ -47,7 +47,7 @@ void Game::move(int dir_row, int dir_col) {
     } else if (id == 2) {
       // 任务9：完成上楼
       info.current_floor++;
-      info.current_map = map_data.get_map(info.current_floor);
+      current_map = map_data.get_map(info.current_floor);
       Point downstair = current_map.get_downstair();
 
       info.current_row = downstair.row;
@@ -57,7 +57,7 @@ void Game::move(int dir_row, int dir_col) {
     } else if (id == 3) {
       // 任务10：完成下楼
       info.current_floor--;
-      info.current_map = map_data.get_map(info.current_floor);
+      current_map = map_data.get_map(info.current_floor);
       Point upstair = current_map.get_upstair();
 
       info.current_row = upstair.row;
