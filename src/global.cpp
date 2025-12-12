@@ -46,14 +46,22 @@ void Game::move(int dir_row, int dir_col) {
       succeed = true;
     } else if (id == 2) {
       // 任务9：完成上楼
-      // 提示：借助 map_data.get_map 函数 以及 current_map.get_downstair() 函数
-      // 等待完成......
+      current_floor += 1;
+      current_map = map_data.get_map(current_map);
+      Point downstair = current_map.get_downstair();
+
+      info.current_row = downstair.row;
+      info.current_col = downstair.col;
       info.print();
       return;
     } else if (id == 3) {
       // 任务10：完成下楼
-      // 提示：借助 map_data.get_map 函数 以及 current_map.get_upstair() 函数
-      // 等待完成......
+      current_floor -= 1;
+      current_map = map_data.get_map(current_map);
+      Point upstair = current_map.get_upstair();
+
+      info.current_row = upstair.row;
+      info.current_col = upstair.col;
       info.print();
       return;
     } else if (4 <= id && id <= 6) {
@@ -63,8 +71,9 @@ void Game::move(int dir_row, int dir_col) {
       }
     } else if (11 <= id && id <= 13) {
       // 任务11：完成钥匙
-      // 提示：借助 player_data.pick_key 函数 以及 map_erase 函数 不要忘记设置 succeed
-      // 等待完成......
+      player_data.pick_key(id);
+      map_erase(tar_row, tar_col);
+      succeed = true;
     } else if (Item::is_item(id)) {
       // 加成道具
       player_data.pick_item(item_data.find(id));

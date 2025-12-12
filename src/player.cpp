@@ -52,11 +52,7 @@ bool Player::open_door(int id) {
 // 任务6：完成战斗
 bool Player::fight(const Monster &monster) {
 
-  // 等待完成.....
-
   int result = 0; // 1 -> 玩家胜 2 -> 怪物胜
-
-  // 等待完成.....
 
   if (result == 1) {
     // 等待完成.....
@@ -69,8 +65,12 @@ bool Player::fight(const Monster &monster) {
 
 // 任务8：完成NPC交互
 bool Player::interact(const NPC &npc) {
-  // 提示：想好什么时候 return false
-  // 等待完成.....
+  if (_hp + npc.hp <= 0 || _money + npc.money < 0) {
+    return false;
+  }
+  _hp += npc.hp;
+  _attack += npc.attack;
+  _money += npc.money;
   print();
   return true;
 }
