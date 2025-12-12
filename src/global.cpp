@@ -81,8 +81,11 @@ void Game::move(int dir_row, int dir_col) {
       succeed = true;
     } else if (Monster::is_monster(id)) {
       // 任务12：完成怪物
-      // 提示：借助 player_data.fight 函数 以及 map_erase 函数 不要忘记设置 succeed
-      // 等待完成......
+      Monster monster = monster_data.find(id);
+      if (player_data.fight(monster)) {
+        map_erase(tar_row, tar_col);
+        succeed = true;
+      }
     } else if (NPC::is_npc(id)) {
       // NPC
       succeed = true;
