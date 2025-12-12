@@ -45,6 +45,7 @@ jobs:
       with:
         name: judge-results
         path: |
+          src\result.zip
           *.zip
           *.log
           test/*.out
